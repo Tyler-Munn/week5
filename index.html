@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Basic Leaflet Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+</head>
+
+<body>
+
+  <div id="map" style="width: 600px; height: 400px"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="sites.json"></script>
+
+  <script>
+
+    var map = L.map('map').setView([39.952583, -75.165222], 12);
+
+    // Q Prompt: "how to add a mapbox tile layer" and "why isn't the mapbox layer appearing in my code?"
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'tylermunn/clse1t6ik032h01qs7a4p43el', 
+        accessToken: 'pk.eyJ1IjoidHlsZXJtdW5uIiwiYSI6ImNsbzdxeHpjNzA3bGEyc2w0NWsxdmpoOGMifQ.yUw0653YqFN2tg7KbwqPmw'
+    }).addTo(map);
+
+    var PhillySites = L.geoJson(sites, {
+    // From: https://leafletjs.com/reference.html#geojson-l-geojson
+    // L.geoJson acceots a GeoJSON object, in this case 'sites', to display on a map
+    // var PhillySites = L.geoJson(sites, {
+        pointToLayer: function(feature,latlng) {
+        // From: https://leafletjs.com/reference.html#geojson-pointtolayer
+        // pointToLayer calls points from a GeoJSON based on latlng
+        // pointToLayer: function(feature,latlng) {
+              console.log(feature.properties)
+              return L.circleMarker(latlng, {
+                radius: 2, 
+                color: 'green',
+              });   
+          },
+
+
+    filter: function(feature, layer){
+          if(feature.properties.PARK_NAME === 'Frank Glavin Playground'){
+              return true
+                        }
+    // From: https://leafletjs.com/reference.html#geojson-filter
+    // Filter is an option in L.geojson that decides what to include or not
+    // filter: function(feature, layer){
+    //       if(feature.properties.PARK_NAME === 'Frank Glavin Playground'){
+    //           return true
+    //                     }
+      }
+
+    }).addTo(map)
+
+  </script>
+
+</body>
+</html>
