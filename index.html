@@ -7,7 +7,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
     <style>
@@ -56,7 +56,12 @@
 
     <footer>
         <p>Map authored by Tyler Munn</p>
-        <p>Larger circles indicate larger power plant capacity. Click a circle to see that plant's name and capacity. Display fuel sources by clicking on/off the name of the source in the upper right hand corner.</p>
+        <p><i>Larger circles indicate larger power plant capacity. Hover over a circle to see that plant's name and capacity. 
+            Display fuel sources by clicking on/off the name of the source in the upper right hand corner.</i></p>
+        <p>I used the principle "Positioning should match the map’s intent". I noticed that there were areas where a lot of 
+            power plants were clusted, and it was hard to click a specific one to see its information, so I made it so information pops up
+            on a mouse hover and a click zooms in on that particular powerplant.
+        </p>
     </footer>
 
     <script src="power-plants.js"></script>
@@ -75,185 +80,133 @@
       
       tiles.addTo(map);
         
-         
-    //step 2
-      
- //   plants.features.sort(function(a, b) {
-   // return b.properties.capacity_mw - a.properties.capacity_mw;
-//});
-    
-    //step 1    and then change to step 3 with 'return'
-      var Biomass = L.geoJson(plants, {
-          pointToLayer: function(feature,latlng) {
-              console.log(feature.properties.fuel_source)
-              return L.circleMarker(latlng, {
-                 color: '#996633',
-                 weight: 2,
-                 fillColor: '#c68c53',
-                 fillOpacity: .5,
-                 radius: getRadius(feature.properties.capacity_mw) //step4
-              });   
-          },
-          
-      filter : function(feature, layer){
-              if(feature.properties.fuel_source['Biomass']){
-                  return feature
-              };
-             // console.log(feature);
-          },
-         
-    //step 5
-    onEachFeature : function(feature,layer) {
-    layer.on('mouseover', function() {
-    layer.setStyle({
-        fillColor: '#538DC6'
-    });
-});
-layer.on('mouseout', function() {
-    layer.setStyle({
-        fillColor: '#c68c53'
-    });
-});
-
-
-
-
-
-          //step 6  
-          
-          var name = feature.properties.plant_name
-          var capacity = feature.properties.capacity_mw.toLocaleString()
-          var fuel = feature.properties.fuel_source
-      
-                                                
-          
-          var popup = ("<b>"+name+"</b><br>"
-              +capacity+ " MW" + "<br>")
-                       layer.bindPopup(popup)
-          }
-          
-          
-      }).addTo(map);
-
-
-     var Geothermal = L.geoJson(plants, {
-          pointToLayer: function(feature,latlng) {
-              console.log(feature.properties.fuel_source)
-              return L.circleMarker(latlng, {
-                 color: '#b30000',
-                 weight: 2,
-                 fillColor: '#ff1a1a',
-                 fillOpacity: .5,
-                 radius: getRadius(feature.properties.capacity_mw) //step4
-              });   
-          },
-          
-      filter : function(feature, layer){
-              if(feature.properties.fuel_source['Geothermal']){
-                  return feature
-              };
-             // console.log(feature);
-          },
-         
-    //step 5
-    onEachFeature : function(feature,layer) {
-    layer.on('mouseover', function() {
-    layer.setStyle({
-        fillColor: '#1AFFFF'
-    });
-});
-layer.on('mouseout', function() {
-    layer.setStyle({
-        fillColor: '#ff1a1a'
-    });
-});
-
-
-
-
-
-          //step 6  
-          
-          var name = feature.properties.plant_name
-          var capacity = feature.properties.capacity_mw.toLocaleString()
-          var fuel = feature.properties.fuel_source
-      
-                                                
-          
-          var popup = ("<b>"+name+"</b><br>"
-              +capacity+ " MW" + "<br>")
-                       layer.bindPopup(popup)
-          }
-          
-          
-      }).addTo(map);
-
-
-
-      var Solar = L.geoJson(plants, {
-          pointToLayer: function(feature,latlng) {
-              console.log(feature.properties.fuel_source)
-              return L.circleMarker(latlng, {
-                 color: '#ffd11a',
-                 weight: 2,
-                 fillColor: '#ffdb4d',
-                 fillOpacity: .5,
-                 radius: getRadius(feature.properties.capacity_mw) //step4
-              });   
-          },
-          
-      filter : function(feature, layer){
-              if(feature.properties.fuel_source['Solar']){
-                  return feature
-              };
-             // console.log(feature);
-          },
-         
-    //step 5
-    onEachFeature : function(feature,layer) {
-    layer.on('mouseover', function() {
-    layer.setStyle({
-        fillColor: '#4D71FF'
-    });
-});
-layer.on('mouseout', function() {
-    layer.setStyle({
-        fillColor: '#ffdb4d'
-    });
-});
-
-
-
-
-
-          //step 6  
-          
-          var name = feature.properties.plant_name
-          var capacity = feature.properties.capacity_mw.toLocaleString()
-          var fuel = feature.properties.fuel_source
-      
-                                                
-          
-          var popup = ("<b>"+name+"</b><br>"
-              +capacity+ " MW" + "<br>")
-                       layer.bindPopup(popup)
-          }          
-          
-      }).addTo(map);
-
-      var sourceLayers = {
-    "<b style='color:#996633'>Biomass</b>": Biomass,
-    "<b style='color:#b30000'>Geothermal</b>": Geothermal,
-    "<b style='color:#ffd11a'>Solar</b>": Solar
-    
-};
-L.control.layers(null, sourceLayers, {collapsed:false} ).addTo(map);
-//step 4
-        function getRadius(area){
+    function getRadius(area){
         var radius = Math.sqrt(area/Math.PI);
         return radius   
     }
-          
+
+    var Biomass = L.geoJson(plants, {
+        pointToLayer: function(feature,latlng) {
+            return L.circleMarker(latlng, {
+                color: '#996633',
+                weight: 2,
+                fillColor: '#c68c53',
+                fillOpacity: .5,
+                radius: getRadius(feature.properties.capacity_mw)
+            });   
+        },
+
+        filter : function(feature, layer){
+            if(feature.properties.fuel_source['Biomass']){
+                return feature
+            };
+        },
+
+        onEachFeature : function(feature, layer) {
+            layer.on('mouseover', function(e) {
+                this.setStyle({
+                    fillColor: '#538DC6'
+                });
+                this.bindPopup("<b>" + feature.properties.plant_name + "</b><br>" + feature.properties.capacity_mw.toLocaleString() + " MW").openPopup();
+            });
+            
+            layer.on('mouseout', function(e) {
+                this.setStyle({
+                    fillColor: '#c68c53'
+                });
+                this.closePopup();
+            });
+
+            layer.on('click', function(e) {
+                map.setView(e.latlng, 10); // Adjust the zoom level as needed
+            });
+        }
+    }).addTo(map);
+
+    var Geothermal = L.geoJson(plants, {
+        pointToLayer: function(feature,latlng) {
+            return L.circleMarker(latlng, {
+                color: '#b30000',
+                weight: 2,
+                fillColor: '#ff1a1a',
+                fillOpacity: .5,
+                radius: getRadius(feature.properties.capacity_mw)
+            });   
+        },
+
+        filter : function(feature, layer){
+            if(feature.properties.fuel_source['Geothermal']){
+                return feature
+            };
+        },
+
+        onEachFeature : function(feature, layer) {
+            layer.on('mouseover', function(e) {
+                this.setStyle({
+                    fillColor: '#1AFFFF'
+                });
+                this.bindPopup("<b>" + feature.properties.plant_name + "</b><br>" + feature.properties.capacity_mw.toLocaleString() + " MW").openPopup();
+            });
+            
+            layer.on('mouseout', function(e) {
+                this.setStyle({
+                    fillColor: '#ff1a1a'
+                });
+                this.closePopup();
+            });
+
+            layer.on('click', function(e) {
+                map.setView(e.latlng, 7); // Adjust the zoom level as needed
+            });
+        }
+    }).addTo(map);
+
+    var Solar = L.geoJson(plants, {
+        pointToLayer: function(feature,latlng) {
+            return L.circleMarker(latlng, {
+                color: '#ffd11a',
+                weight: 2,
+                fillColor: '#ffdb4d',
+                fillOpacity: .5,
+                radius: getRadius(feature.properties.capacity_mw)
+            });   
+        },
+
+        filter : function(feature, layer){
+            if(feature.properties.fuel_source['Solar']){
+                return feature
+            };
+        },
+
+        onEachFeature : function(feature, layer) {
+            layer.on('mouseover', function(e) {
+                this.setStyle({
+                    fillColor: '#4D71FF'
+                });
+                this.bindPopup("<b>" + feature.properties.plant_name + "</b><br>" + feature.properties.capacity_mw.toLocaleString() + " MW").openPopup();
+            });
+            
+            layer.on('mouseout', function(e) {
+                this.setStyle({
+                    fillColor: '#ffdb4d'
+                });
+                this.closePopup();
+            });
+
+            layer.on('click', function(e) {
+                map.setView(e.latlng, 10); // Adjust the zoom level as needed
+            });
+        }
+    }).addTo(map);
+
+    var sourceLayers = {
+        "<b style='color:#996633'>Biomass</b>": Biomass,
+        "<b style='color:#b30000'>Geothermal</b>": Geothermal,
+        "<b style='color:#ffd11a'>Solar</b>": Solar
+    };
+
+    L.control.layers(null, sourceLayers, {collapsed:false}).addTo(map);
+
     </script>
     
 </body>
